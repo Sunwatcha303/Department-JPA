@@ -42,7 +42,7 @@ public class Employee implements Serializable {
     @Column(name = "SALARY")
     private Integer salary;
     @JoinColumn(name = "DEPARTMENTID", referencedColumnName = "DEPARTMENTID")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private Department departmentid;
 
     public Employee(Integer employeeid, String name, String job, Integer salary, Department departmentid) {

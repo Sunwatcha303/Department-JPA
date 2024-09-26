@@ -13,6 +13,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+        Database database = new Database();
         Department it = new Department(1, "IT");
         Department hr = new Department(2, "HR");
 
@@ -21,15 +22,13 @@ public class Main {
         Employee emp3 = new Employee(3, "Henry", "Programmer", 67890, it);
         Employee emp4 = new Employee(4, "Clark", "HR Recruiter", 36789, hr);
 
-        it.getEmployeeCollection().add(emp1);
-        it.getEmployeeCollection().add(emp3);
-        hr.getEmployeeCollection().add(emp2);
-        hr.getEmployeeCollection().add(emp4);
+        it.addEmployee(emp1);
+        it.addEmployee(emp3);
+        hr.addEmployee(emp2);
+        hr.addEmployee(emp4);
 
-        Database.insertDepartment(it);
-        Database.insertDepartment(hr);
-
-        List<Employee> emps = Database.findAllEmployee();
+        database.persist(it, hr);
+        List<Employee> emps = database.findAllEmployeeByID();
         System.out.println("\nAll employee (by ID)");
         System.out.println("---------------------------");
 
@@ -37,19 +36,13 @@ public class Main {
             System.out.println(emp);
             System.out.println("---------------------------");
         }
-        List<Department> depts = Database.findAllDepartment();
+//        L
+        List<Department> depts = database.findAllEmployeeByDepartment();
         System.out.println("\nAll employee (by Department)");
         System.out.println("---------------------------");
         for (Department dept : depts) {
             System.out.println(dept);
         }
-
-        Database.deleteEmployee(emp1);
-        Database.deleteEmployee(emp2);
-        Database.deleteEmployee(emp3);
-        Database.deleteEmployee(emp4);
-
-        Database.deleteDepartment(it);
-        Database.deleteDepartment(hr);
+        database.removeDeptpartment(it, hr);
     }
 }

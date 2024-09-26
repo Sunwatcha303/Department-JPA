@@ -4,12 +4,11 @@
  */
 package department;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  *
@@ -17,82 +16,67 @@ import javax.persistence.Persistence;
  */
 public class Database {
 
-    public static void insertDepartment(Department department) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
+    private EntityManagerFactory emf;
+    private EntityManager em;
+
+    public Database() {
+    }
+
+    public void persist(Object... objects) {
+        this.emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
+        this.em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
-            em.persist(department);
+            for (Object object : objects) {
+                em.persist(object);
+            }
             em.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
             em.close();
         }
     }
 
-    public static void insertEmployee(Employee employee) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
+    public void removeDeptpartment(Department... depts) {
+        this.emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
+        this.em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
-            em.persist(employee);
+            for (Department dept : depts) {
+                Department fromDB = em.find(Department.class, dept.getDepartmentid());
+//                System.out.println(fromDB);
+                em.remove(fromDB);
+            }
             em.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
             em.close();
         }
     }
 
-    public static void deleteDepartment(Department department) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
-        Department fromDB = em.find(Department.class, department.getDepartmentid());
-        em.getTransaction().begin();
-        try {
-            em.remove(fromDB);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-        }
-    }
+    public List<Employee> findAllEmployeeByID() {
+        this.emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
+        this.em = emf.createEntityManager();
 
-    public static void deleteEmployee(Employee employee) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
-        Employee fromDB = em.find(Employee.class, employee.getEmployeeid());
-        em.getTransaction().begin();
-        try {
-            em.remove(fromDB);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-        }
-    }
+        String jpql = "SELECT emp FROM Employee emp ORDER BY emp.employeeid";
+        Query query = em.createQuery(jpql);
 
-    public static List<Employee> findAllEmployee() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
-        List<Employee> employeeList = (List<Employee>) (em.createNamedQuery("Employee.findAll").getResultList());
-        Collections.sort(employeeList, Comparator.comparing(Employee::getEmployeeid));
+        List<Employee> empList = (List<Employee>) query.getResultList();
         em.close();
-        return employeeList;
+        return empList;
     }
 
-    public static List<Department> findAllDepartment() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
-        EntityManager em = emf.createEntityManager();
-        List<Department> departmentList = (List<Department>) (em.createNamedQuery("Department.findAll").getResultList());
+    public List<Department> findAllEmployeeByDepartment() {
+        this.emf = Persistence.createEntityManagerFactory("DepartmentJPAPU");
+        this.em = emf.createEntityManager();
+
+        String jpql = "SELECT d FROM Department d ORDER BY d.departmentid";
+        Query query = em.createQuery(jpql);
+        List<Department> deptList = query.getResultList();
         em.close();
-        return departmentList;
+        return deptList;
     }
+
 }

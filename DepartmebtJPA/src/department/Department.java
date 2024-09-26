@@ -56,7 +56,10 @@ public class Department implements Serializable {
     public Department(Integer departmentid) {
         this.departmentid = departmentid;
     }
-
+    
+    public void addEmployee(Employee emp){
+        this.employeeCollection.add(emp);
+    }
     public Integer getDepartmentid() {
         return departmentid;
     }
