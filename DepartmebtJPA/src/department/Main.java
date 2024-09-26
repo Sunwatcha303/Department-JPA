@@ -36,7 +36,7 @@ public class Main {
             System.out.println(emp);
             System.out.println("---------------------------");
         }
-//        L
+        
         List<Department> depts = database.findAllEmployeeByDepartment();
         System.out.println("\nAll employee (by Department)");
         System.out.println("---------------------------");
